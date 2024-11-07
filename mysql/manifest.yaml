@@ -28,3 +28,19 @@ spec:
       containers:
       - name: mysql
         image: avkdocr/mysql:v1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-cip
+  namespace: expense
+spec:
+  selector:
+    tier: db
+    app: mysql
+    project: expense 
+  ports:
+  - name: mysql-cip-port
+    protocol: TCP
+    port: 3306 # this port number is belongs to this service
+    targetPort: 3306 # this is target containr's port
