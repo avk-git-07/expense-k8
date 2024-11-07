@@ -1,0 +1,58 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend
+  namespace: expense
+data:
+  DB_HOST: mysql-cip # mysql service name
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: expense
+  labels: # these are deployment labels
+    app: backend
+    tier: api
+    project: expense
+spec:
+  # modify replicas according to your case
+  replicas: 2
+  selector:
+  # these are used to select the pod to create it's replicas
+    matchLabels: 
+      tier: api
+      app: backend
+      project: expense
+  # this is pod replicas' definition which are going to be generated
+  template:
+    metadata:
+    # these labels belongs to replicas which are going to be generated
+      labels:
+        tier: api
+        app: backend
+        project: expense
+    spec:
+      containers:
+      - name: backend
+        image: avkdocr/backend:v1
+        envFrom:
+        - configMapRef:
+          name: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-cip
+  namespace: expense
+spec:
+  selector:
+    tier: api
+    app: backend
+    project: expense 
+  ports:
+  - name: backend-cip-port
+    protocol: TCP
+    port: 8080 # this port number is belongs to this service
+    targetPort: 8080 # this is target containr's port
