@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: expense
+  labels: # these are deployment labels
+    app: mysql
+    tier: db
+    project: expense
+spec:
+  # modify replicas according to your case
+  replicas: 1
+  selector:
+  # these are used to select the pod to create it's replicas
+    matchLabels: 
+      tier: db
+      app: mysql
+      project: expense
+  # this is pod replicas' definition which are going to be generated
+  template:
+    metadata:
+    # these labels belongs to replicas which are going to be generated
+      labels:
+        tier: db
+        app: mysql
+        project: expense
+    spec:
+      containers:
+      - name: mysql
+        image: avkdocr/mysql:v1
